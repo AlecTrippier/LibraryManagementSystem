@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- この部分は、このファイルがHTML5（最新のHTMLのバージョン）で書かれていることをブラウザに教えています。-->
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- ここからがHTMLの本文です。"th"はThymeleafというテンプレートエンジンの名前空間（一種のプレフィックス）です。これが使われているタグは、Thymeleafによって特殊な動作をするようになります。 -->
+<head>
+    <!-- この部分はページのメタ情報（ページ自体に関する情報）を入れるための場所です。-->
+    <title>Book Details</title>
+    <!-- titleタグには、ブラウザのタブに表示されるページのタイトルを書きます。 -->
+</head>
+<body>
+    <!-- ここからがウェブページの本文です。-->
+    <a th:href="@{/}">Back to Home</a>
+    <!-- これはリンクを作るためのタグです。th:hrefはThymeleafによって解釈され、"@{/}"はホームページへのリンクを意味します。 -->
+
+<h1 th:text="${book.title}"></h1>
+<!-- これは大きな見出しを作るためのタグです。th:textはThymeleafによって解釈され、${book.title}の部分には書籍のタイトルが表示されます。 -->
+
+<table>
+    <!-- これは表を作るためのタグです。 -->
+    <thead>
+    <!-- 表の見出し部分を作るためのタグです。 -->
+    <tr>
+        <!-- 行を作るためのタグです。 -->
+        <th>著者</th>
+        <!-- 列の見出しを作るためのタグです。 -->
+        <th>出版年</th>
+        <th>出版社</th>
+        <th>ジャンル</th>
+        <th>貸出状況</th>
+        <th>貸出ユーザー</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <!-- 表の本文部分を作るためのタグです。 -->
+        <tr>
+            <!-- 新しい行の開始 -->
+            <td th:text="${book.author}"></td>
+            <!-- 列を作るためのタグです。ここでは、書籍の著者名が表示されます。 -->
+            <td th:text="${book.publicationYear}"></td>
+            <!-- ここでは、書籍の出版年が表示されます。 -->
+            <td th:text="${book.publisher}"></td>
+            <!-- ここでは、書籍の出版社が表示されます。 -->
+            <td th:text="${book.genre}"></td>
+            <!-- ここでは、書籍のジャンルが表示されます。 -->
+            <td th:if="${book.status} == 'borrowed'">貸出中</td>
+            <!-- ここでは、書籍が貸出中であれば「貸出中」と表示されます。 -->
+            <td th:if="${book.status} == 'available'">貸出できます</td>
+            <!-- ここでは、書籍が利用可能であれば「貸出できます」と表示されます。 -->
+            
+            <!-- ユーザー情報を表示します -->
+            <td th:if="${borrowedUser} != null">
+                <!-- この部分では、書籍が借りられている場合、借りているユーザーの名前とメールアドレスが表示されます。 -->
+                <p th:text="${borrowedUser.username}"></p>
+                <!-- ここでは、ユーザーの名前が表示されます。 -->
+                <p th:text="${borrowedUser.email}"></p>
+                <!-- ここでは、ユーザーのメールアドレスが表示されます。 -->
+            </td>
+            <td th:if="${borrowedUser} == null"> - </td>
+            <!-- この部分では、書籍が借りられていない場合、"-"が表示されます。 -->
+        </tr>
+    </tbody>
+</table>
+
+<!-- 状態により、貸出/返却ボタンを表示 -->
+
+<div>
+    <!-- この部分では、書籍の状態によって表示するボタンを変えています。 -->
+    <form th:if="${book.status} == 'available'" th:action="@{'/api/books/borrowBook'}" method="post">
+        <!-- ここでは、書籍が利用可能であれば、「貸出する」ボタンが表示されます。 -->
+        <input type="hidden" name="bookId" th:value="${book.id}">
+        <!-- これは見えない入力フィールドです。送信するときに、書籍のIDがこのフィールドに入れられます。 -->
+        <input type="hidden" name="userId" th:value="${currentUserId}">
+        <!-- これも見えない入力フィールドです。送信するときに、現在のユーザーのIDがこのフィールドに入れられます。 -->
+        <button type="submit">貸出する</button>
+        <!-- これはボタンです。「貸出する」と書かれています。 -->
+    </form>
+    
+    <form th:if="${book.status} == 'borrowed'" th:action="@{'/api/books/returnBook'}" method="post">
+        <!-- ここでは、書籍が貸出中であれば、「返却する」ボタンが表示されます。 -->
+        <input type="hidden" name="bookId" th:value="${book.id}">
+        <!-- これは見えない入力フィールドです。送信するときに、書籍のIDがこのフィールドに入れられます。 -->
+        <input type="hidden" name="userId" th:value="${currentUserId}">
+        <!-- これも見えない入力フィールドです。送信するときに、現在のユーザーのIDがこのフィールドに入れられます。 -->
+        <button type="submit">返却する</button>
+        <!-- これはボタンです。「返却する」と書かれています。 -->
+    </form>
+</div>
+</body>
+</html>
+<!-- ここでHTMLの本文が終わり、全体が閉じられます。 -->

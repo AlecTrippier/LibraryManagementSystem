@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- ページタイトルを設定します -->
+    <title>Book List</title>
+</head>
+
+<body>
+    <!-- ページの見出しを表示します -->
+    <h1>Book List</h1>
+
+    <!-- 本の情報を表形式で表示します -->
+    <table>
+        <thead>
+        <tr>
+            <!-- 各列の見出しを設定します -->
+            <th>タイトル</th>
+            <th>著者</th>
+            <th>出版年</th>
+            <th>出版社</th>
+            <th>ジャンル</th>
+            <th>貸出状況</th>
+            <th>詳細</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- 本ごとに行を生成します、"books"はリスト型のデータで、各本のデータが入っています -->
+        <tr th:each="book : ${books}">
+            <!-- それぞれのセルに、本の情報を表示します -->
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.publicationYear}"></td>
+            <td th:text="${book.publisher}"></td>
+            <td th:text="${book.genre}"></td>
+            <td th:text="${book.status}"></td>
+
+            <!-- 各本の詳細ページへのリンクを設置します。リンクのURLは、本のIDに基づいて動的に生成されます -->
+            <td><a th:href="@{'/books/details/' + ${book.id}}">詳細</a></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
